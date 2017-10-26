@@ -1,0 +1,88 @@
+<?php
+
+error_reporting(-1);
+ini_set('display_errors',1);
+header('Content-Type: text/html; charset=utf-8');
+session_start();
+
+class Form
+{
+    private function transformArray ($array)
+    {
+        $result = '';
+        foreach ($array as $key=>$val) {
+            $result .= $key.'="'.$val.'" ';
+        }
+        return $result;
+    }
+
+    public function input ($array)
+    {
+        return '<input '.$this->transformArray($array).'>';
+    }
+
+    public function password ($array)
+    {
+        return '<input type="password" '.$this->transformArray($array).'>';
+    }
+
+    public function submit ($array)
+    {
+        return '<input type="submit" '.$this->transformArray($array).'>';
+    }
+
+    public function textarea ($array)
+    {
+        return '<textarea '.$this->forTextarea($array).'</textarea>';
+    }
+
+    public function open ($array)
+    {
+        return '<form '.$this->transformArray($array).'>';
+    }
+    public function close ()
+    {
+        return '</form>';
+    }
+
+    public function forTextarea ($array)
+    {
+        $result = '';
+        foreach ($array as $key=>$val) {
+            if ($key != 'value') {
+                $result .= $key.'="'.$val.'" ';
+            } else {
+                $result .= '>'.$val;
+            }
+        }
+        return $result;
+    }
+}
+
+class SmartForm extends Form
+{
+    public $input;
+
+    public function setInput ($input)
+    {
+        $this->input = $input;
+    }
+
+    public function getInput ()
+    {
+        return $this->input;
+    }
+}
+
+$form = new Form();
+echo htmlspecialchars($form->input(['type'=>'text', 'value'=>'!!!']));
+echo '<br>';
+echo htmlspecialchars($form->password(['value'=>'!!!']));
+echo '<br>';
+echo htmlspecialchars($form->submit(['value'=>'go']));
+echo '<br>';
+echo htmlspecialchars($form->textarea(['placeholder'=>'123', 'value'=>'!!!']));
+echo '<br>';
+echo htmlspecialchars($form->open(['action'=>'index.php', 'method'=>'POST']));
+echo '<br>';
+echo htmlspecialchars($form->close());
